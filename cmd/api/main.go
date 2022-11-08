@@ -1,15 +1,29 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
+	"fmt"
+	"log"
+	"net/http"
 )
 
+const webPort = "80"
+
+type Config struct{}
+
 func main() {
-	r := gin.Default()
 
-	r.GET("/test", func(c *gin.Context) {
-		c.JSON(200, "worked")
-	})
+	app := Config{}
 
-	r.Run()
+	log.Printf("starting port %s", webPort)
+
+	srv := &http.Server{
+		Addr:    fmt.Sprintf(":%s", webPort),
+		Handler: app.routes(),
+	}
+
+	err := srv.ListenAndServe()
+
+	if err != nil {
+		log.Panic(err)
+	}
 }
